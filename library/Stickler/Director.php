@@ -19,17 +19,15 @@ class Director
         $loader = $this->getDirectoryLoader();
         $tokenizer = $this->getTokenizer();
         $scanner = $this->getScanner();
+        $scanner->attach(new Detector\CurlVerifyPeerDisabled);
         $files = $loader->load($this->directory);
         foreach ($files as $file) {
-            $content = file_get_contents($file);
-            $tokens = $tokenizer->tokenize($content);
+            $tokens = $tokenizer->tokenize($file);
+            $tokens->setFilePath($file);
+            $tokens->setFileName(basename($file));
             $scanner->scan($tokens);
         }
-        foreach ($this->detectors as $detector) {
-            if ($detector->isTriggered()) {
-                echo get_class($detector), ' was triggered', "\n";
-            }
-        }
+        var_dump($scanner->getLog()); // simple output for sanity testing
     }
 
     public function getDirectoryLoader()
@@ -48,23 +46,6 @@ class Director
     {
         $return = new Scanner;
         return $return;
-    }
-
-    public function attach(Detector/DetectorInterface $detector)
-    {
-        $this->detectors[get_class($detector)] = $detector;
-    }
-
-    public function detach(Detector/DetectorInterface $detecter)
-    {
-        $this->detectors[get_class($detector)] = null;
-    }
-
-    public function notify($something)
-    {
-        foreach ($this->detectors as $detector) {
-            $detector->notify($something);
-        }
     }
 
 }

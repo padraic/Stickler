@@ -2,20 +2,21 @@
 
 namespace Stickler;
 
-class FileTokens
+class FileTokens extends \ArrayObject
 {
 
     protected $fileName;
 
     protected $filePath;
 
-    protected $tokens = array();
-
-    public function __construct($fileName, $filePath, array $tokens)
+    public function setFileName($fileName)
     {
         $this->fileName = $fileName;
+    }
+
+    public function setFilePath($filePath)
+    {
         $this->filePath = $filePath;
-        $this->tokens = $tokens;
     }
 
     public function getFileName()
@@ -26,11 +27,6 @@ class FileTokens
     public function getFilePath()
     {
         return $this->filePath;
-    }
-
-    public function getTokens()
-    {
-        return $this->tokens;
     }
 
 }
