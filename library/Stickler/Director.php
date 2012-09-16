@@ -9,6 +9,8 @@ class Director
 
     protected $detectors = array();
 
+    protected $logs = array();
+
     public function __construct($directory)
     {
         $this->directory = $directory;
@@ -26,8 +28,14 @@ class Director
             $tokens->setFilePath($file);
             $tokens->setFileName(basename($file));
             $scanner->scan($tokens);
-        }
-        var_dump($scanner->getLog()); // simple output for sanity testing
+            $logs = $scanner->getLog();
+            $scanner->resetLog();
+            foreach ($logs as $log) {
+                $log['file'] = $file;
+                $this->logs[] = $log;
+            }
+        } 
+        var_dump($this->getLog()); // simple output for sanity testing
     }
 
     public function getDirectoryLoader()
@@ -46,6 +54,11 @@ class Director
     {
         $return = new Scanner;
         return $return;
+    }
+
+    public function getLog()
+    {
+        return $this->logs;
     }
 
 }

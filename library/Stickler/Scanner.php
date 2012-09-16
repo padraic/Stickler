@@ -55,4 +55,9 @@ class Scanner
         return $this->log;
     }
 
+    public function resetLog()
+    {
+        $this->log = array();
+    }
+
 }
